@@ -3,10 +3,10 @@ kind: Pod
 metadata:
   name: nginx-decorated-pod
 spec:
-  hostname: nuc8i5beh
+  hostname: nuc8i5beh #replace with your hostname - run microk8s kubectl get nodes to check what should go here
   restartPolicy: OnFailure
   containers:
-  - name:  ip-adder
+  - name:  ip-adder #This is basically a container which gets the ip and appends it to the home page of nginx for easy reference
     image: busybox
     command: ["sh","-c","ip addr | grep inet >>/mnt/data/index.html; date >>/mnt/data/index.html; echo ==========================================================================>>/mnt/data/index.html;" ]
     volumeMounts:
@@ -27,7 +27,7 @@ spec:
       periodSeconds: 10
     livenessProbe:
       httpGet:
-        host: nuc8i5beh
+        host: nuc8i5beh #replace with your hostname - run microk8s kubectl get nodes to check what should go here
         port: 8086
       initialDelaySeconds: 150
       periodSeconds: 20
@@ -50,7 +50,7 @@ spec:
   resources:
     requests:
       storage: 40Mi
-  storageClassName: microk8s-hostpath  #microk8s specific
+  storageClassName: microk8s-hostpath  #microk8s specific - this can be changed in other environments or if a different storage class is defined
 
 ---
 apiVersion: v1
@@ -64,5 +64,5 @@ spec:
     - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   hostPath:
-    path: /home/cloud_user/Public/commonfolder/web #put in your folder here where the service account will have read write access
+    path: /home/cloud_user/Public/commonfolder/web #put in your host machine folder here where the service account will have read write access
   storageClassName: microk8s-hostpath #microk8s specific
